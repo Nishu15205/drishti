@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Drishti — log of every AI vision interaction (describe / voice Q&A)
+model ScanLog {
+  id        String   @id @default(cuid())
+  kind      String // "describe" | "ask"
+  mode      String   @default("scene") // scene | currency | medicine | text | ask
+  language  String   @default("en") // en | hi
+  question  String? // only for kind = "ask"
+  answer    String
+  thumb     String? // small base64 jpeg preview (dataURL)
+  source    String   @default("camera") // camera | demo:<name>
+  createdAt DateTime @default(now())
+}
+
+// Drishti 2.0 — faces & items the user taught the app to remember
+model KnownMemory {
+  id        String   @id @default(cuid())
+  kind      String // "face" | "item"
+  name      String
+  note      String?
+  image     String // small jpeg dataURL (~320px)
+  createdAt DateTime @default(now())
+}
